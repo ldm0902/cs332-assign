@@ -54,7 +54,7 @@ object Main {
       countChange(money,coins.tail)
     }
     else{
-      countChange(money-coins.head,coins)+countChange(money-coins.head,coins.tail)
+      countChange(money-coins.head,coins)+countChange(money,coins.tail)
     }
   }
 }
