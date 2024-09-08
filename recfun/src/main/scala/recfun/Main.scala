@@ -47,14 +47,14 @@ object Main {
    */
   def countChange(money: Int, coins: List[Int]): Int = {
     if(coins.isEmpty){
-      if(change==0) 1
+      if(money==0) 1
       else 0
     }
-    else if(change<coins.head){
-      countChange_count(change,coins.tail)
+    else if(money<coins.head){
+      countChange(money,coins.tail)
     }
     else{
-      countChange_count(change-coins.head,coins)+countChange_count(change-coins.head,coins.tail)
+      countChange(money-coins.head,coins)+countChange(money-coins.head,coins.tail)
     }
   }
 }
