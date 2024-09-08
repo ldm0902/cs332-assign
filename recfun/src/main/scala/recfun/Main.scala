@@ -22,7 +22,25 @@ object Main {
   /**
    * Exercise 2
    */
-  def balance(chars: List[Char]): Boolean = ???
+  def balance(chars: List[Char]): Boolean = {
+    def balance_count(c: List[Char],cnt: Int): Int={
+      if (c.isEmpty||cnt<0){
+        cnt
+      }
+      else if(c.head=='('){
+        balance_count(c.tail,cnt+1)
+      }
+      else if(c.head==')'){
+        balance_count(c.tail,cnt-1)
+      }
+      else{
+        balance_count(c.tail,cnt)
+      }
+    }
+
+    if(balance_count(chars,0)==0) true
+    else false
+  }
 
   /**
    * Exercise 3
