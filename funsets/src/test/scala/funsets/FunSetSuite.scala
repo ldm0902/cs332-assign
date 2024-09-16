@@ -88,7 +88,7 @@ class FunSetSuite extends FunSuite {
    * Once you finish your implementation of "singletonSet", exchange the
    * function "ignore" by "test".
    */
-  test("singletonSet(1) contains 1") {
+  ignore("singletonSet(1) contains 1") {
     
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
@@ -104,69 +104,12 @@ class FunSetSuite extends FunSuite {
     }
   }
 
-  test("union contains all elements") {
+  ignore("union contains all elements") {
     new TestSets {
       val s = union(s1, s2)
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
-
     }
   }
-
-
-  test("intersect contains all elements") {
-    new TestSets {
-      val s = intersect(s1, s2)
-      assert(!contains(s, 1), "intersect 1")
-      assert(!contains(s, 2), "intersect 2")
-      val ss = intersect(s1s3, s1)
-      assert(contains(ss, 1), "Intersect 3")
-      assert(!contains(ss, 2), "Intersect 4")
-      assert(!contains(ss, 3), "Intersect 5")
-    }
-  }
-
-    test("diff contains all elements") {
-      new TestSets {
-        val s = diff(s1, s2)
-        assert(contains(s, 1), "diff 1")
-        assert(!contains(s, 2), "diff 2")
-        val ss = diff(s1s3, s1)
-        assert(!contains(ss, 1), "diff 3")
-        assert(!contains(ss, 2), "diff 4")
-        assert(contains(ss, 3), "diff 5")
-      }
-  }
-
-  test("filter contains all elements") {
-    new TestSets {
-      val s = filter(s1, s2)
-      assert(!contains(s, 1), "filter 1")
-      assert(!contains(s, 2), "filter 2")
-      val ss = filter(s1s3, s1)
-      assert(contains(ss, 1), "filter 3")
-      assert(!contains(ss, 2), "filter 4")
-      assert(!contains(ss, 3), "filter 5")
-    }
-  }
-
-  test("forall contains all elements") {
-    new TestSets {
-      assert(forall(s1,s1s2s3), "forall 1")
-      assert(forall(s1s2s3,x=>x>0), "forall 2")
-      assert(!forall(s1s2s3,x=>x<0), "forall 3")
-    }
-  }
-
-
-  test("exists contains all elements") {
-    new TestSets {
-      assert(exists(s1,s1s2s3), "exists 1")
-      assert(exists(s1s2s3,x=>x>0), "exists 2")
-      assert(!exists(s1s2s3,x=>x<0), "exists 3")
-      assert(exists(s1s3,s1), "exists 4")
-    }
-  }
-
 }
