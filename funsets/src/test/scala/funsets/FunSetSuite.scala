@@ -150,4 +150,23 @@ class FunSetSuite extends FunSuite {
       assert(!contains(ss, 3), "filter 5")
     }
   }
+
+  test("forall contains all elements") {
+    new TestSets {
+      assert(forall(s1,s1s2s3), "forall 1")
+      assert(forall(s1s2s3,x=>x>0), "forall 2")
+      assert(!forall(s1s2s3,x=>x<0), "forall 3")
+    }
+  }
+
+
+  test("exists contains all elements") {
+    new TestSets {
+      assert(exists(s1,s1s2s3), "exists 1")
+      assert(exists(s1s2s3,x=>x>0), "exists 2")
+      assert(!exists(s1s2s3,x=>x<0), "exists 3")
+      assert(exists(s1s3,s1), "exists 4")
+    }
+  }
+
 }
