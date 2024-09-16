@@ -51,7 +51,7 @@ class FunSetSuite extends FunSuite {
   import FunSets._
 
   test("contains is implemented") {
-    assert(contains(x => true, 100))
+    assert(!contains(x => x < 0, 100))
   }
   
   /**
@@ -77,6 +77,8 @@ class FunSetSuite extends FunSuite {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+    val s1s3 = union(s1,s3)
+    val s1s2s3 = union(s1s3,s2)
   }
 
   /**
@@ -86,7 +88,7 @@ class FunSetSuite extends FunSuite {
    * Once you finish your implementation of "singletonSet", exchange the
    * function "ignore" by "test".
    */
-  ignore("singletonSet(1) contains 1") {
+  test("singletonSet(1) contains 1") {
     
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
@@ -97,16 +99,55 @@ class FunSetSuite extends FunSuite {
        * The string argument of "assert" is a message that is printed in case
        * the test fails. This helps identifying which assertion failed.
        */
-      assert(contains(s1, 1), "Singleton")
+      assert(contains(s1, 1), "Singleton 1")
+      assert(!contains(s1, 2), "Singleton 2")
     }
   }
 
-  ignore("union contains all elements") {
+  test("union contains all elements") {
     new TestSets {
       val s = union(s1, s2)
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
+
+    }
+  }
+
+
+  test("intersect contains all elements") {
+    new TestSets {
+      val s = intersect(s1, s2)
+      assert(!contains(s, 1), "intersect 1")
+      assert(!contains(s, 2), "intersect 2")
+      val ss = intersect(s1s3, s1)
+      assert(contains(ss, 1), "Intersect 3")
+      assert(!contains(ss, 2), "Intersect 4")
+      assert(!contains(ss, 3), "Intersect 5")
+    }
+  }
+
+    test("diff contains all elements") {
+      new TestSets {
+        val s = diff(s1, s2)
+        assert(contains(s, 1), "diff 1")
+        assert(!contains(s, 2), "diff 2")
+        val ss = diff(s1s3, s1)
+        assert(!contains(ss, 1), "diff 3")
+        assert(!contains(ss, 2), "diff 4")
+        assert(contains(ss, 3), "diff 5")
+      }
+  }
+
+  test("filter contains all elements") {
+    new TestSets {
+      val s = filter(s1, s2)
+      assert(!contains(s, 1), "filter 1")
+      assert(!contains(s, 2), "filter 2")
+      val ss = filter(s1s3, s1)
+      assert(contains(ss, 1), "filter 3")
+      assert(!contains(ss, 2), "filter 4")
+      assert(!contains(ss, 3), "filter 5")
     }
   }
 }
