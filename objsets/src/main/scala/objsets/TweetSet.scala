@@ -66,7 +66,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def isEmpty: Boolean
+  def isEmpty: Boolean //I added 'isEmpty' to implement 'mostRetweeted'
   def mostRetweeted: Tweet
 
   /**
@@ -78,7 +78,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList
 
 
   /**
@@ -117,7 +117,9 @@ class Empty extends TweetSet {
 
   def isEmpty: Boolean = true
 
-  def mostRetweeted: Tweet = throw new NoSuchElementException("Empty TweetSet")
+  def mostRetweeted: Tweet = throw new java.util.NoSuchElementException("Empty TweetSet")
+
+  def descendingByRetweet: TweetList = throw new java.util.NoSuchElementException("Empty TweetSet")
 
   /**
    * The following methods are already implemented
@@ -152,6 +154,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     else if (right.isEmpty) moreRetweeted(left.mostRetweeted, elem)
     else moreRetweeted(moreRetweeted(left.mostRetweeted,elem),right.mostRetweeted)
   }
+
+  def descendingByRetweet: TweetList = new Cons(mostRetweeted, remove(mostRetweeted).descendingByRetweet)
 
 
   /**
@@ -207,14 +211,14 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = ???
-  lazy val appleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(theTweet => (google.exists(keywords => theTweet.text.contains(keywords))))
+  lazy val appleTweets: TweetSet = TweetReader.allTweets.filter(theTweet => (apple.exists(keywords => theTweet.text.contains(keywords))))
 
   /**
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
-  lazy val trending: TweetList = ???
+  lazy val trending: TweetList = googleTweets.union(appleTweets).descendingByRetweet
 }
 
 object Main extends App {
