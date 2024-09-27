@@ -119,7 +119,7 @@ class Empty extends TweetSet {
 
   def mostRetweeted: Tweet = throw new java.util.NoSuchElementException("Empty TweetSet")
 
-  def descendingByRetweet: TweetList = throw new java.util.NoSuchElementException("Empty TweetSet")
+  def descendingByRetweet: TweetList = Nil
 
   /**
    * The following methods are already implemented
