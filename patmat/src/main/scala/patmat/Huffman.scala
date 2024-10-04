@@ -78,13 +78,13 @@ object Huffman {
    *   }
    */
   def times(chars: List[Char]): List[(Char, Int)] = {
-    def add(char:Char, previousList: List[(Char,Int)]) :List[(Char,Int)]={
-      if(previousList.isEmpty) ((char,1) :: Nil)
+    def insert(char:Char, previousList: List[(Char,Int)]) :List[(Char,Int)]={
+      if(previousList.isEmpty) List((char,1))
       else if(char == previousList.head._1) ((char, previousList.head._2 + 1) :: previousList.tail)
-      else (previousList.head :: add(char,previousList.tail))
+      else (previousList.head :: insert(char,previousList.tail))
     }
 
-    if(chars.length<=0) Nil else add(chars.head,times(chars.tail))
+    if(chars.length<=0) Nil else insert(chars.head,times(chars.tail))
   }
 
   /**
@@ -95,19 +95,19 @@ object Huffman {
    * of a leaf is the frequency of the character.
    */
   def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
-    def add(pair: (Char,Int), previousList: List[Leaf]): List[Leaf] = {
-      if (previousList.isEmpty) new Leaf(pair._1,pair._2) :: Nil
+    def insert(pair: (Char,Int), previousList: List[Leaf]): List[Leaf] = {
+      if (previousList.isEmpty) List(new Leaf(pair._1,pair._2))
       else if (previousList.head.weight > pair._2) new Leaf(pair._1,pair._2) :: previousList
-      else previousList.head :: add(pair,previousList.tail)
+      else previousList.head :: insert(pair,previousList.tail)
     }
 
-    if (freqs.length<=0) Nil else add(freqs.head,makeOrderedLeafList(freqs.tail))
+    if (freqs.length<=0) Nil else insert(freqs.head,makeOrderedLeafList(freqs.tail))
   }
 
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-  def singleton(trees: List[CodeTree]): Boolean = ???
+  def singleton(trees: List[CodeTree]): Boolean = (trees.length==1)
 
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -121,7 +121,26 @@ object Huffman {
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
-  def combine(trees: List[CodeTree]): List[CodeTree] = ???
+  def combine(trees: List[CodeTree]): List[CodeTree] = {
+    if(trees.length < 2) trees
+    else {
+      val codeTree1 = trees.head
+      val codeTree2 = trees.tail.head
+      val deletedTree=trees.drop(2)
+
+      val chars = Huffman.chars(codeTree1) ::: Huffman.chars(codeTree2)
+      val weight =Huffman.weight(codeTree1)+Huffman.weight(codeTree2)
+
+      val newCodeTree = new Fork(codeTree1,codeTree2,chars,weight)
+
+      def insert(codetree: CodeTree, previousList: List[CodeTree]): List[CodeTree] = {
+        if (previousList.isEmpty) List(codetree)
+        else if (Huffman.weight(previousList.head) > Huffman.weight(codetree)) codetree :: previousList
+        else previousList.head :: insert(codetree,previousList.tail)
+      }
+      insert(newCodeTree,deletedTree)
+    }
+  }
 
   /**
    * This function will be called in the following way:
