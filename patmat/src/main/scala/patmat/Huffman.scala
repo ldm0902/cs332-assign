@@ -197,21 +197,21 @@ object Huffman {
    * the resulting list of characters.
    */
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {   //return type changed
-    def move(tree: CodeTree, bits: List[Bit], resultList: List[Char]): List[Char]={
+    def move(tree: CodeTree, bits: List[Bit], dropCnt: Int): (Char,Int)={
       tree match {
         case Fork(left, right, chars, weight) => {
-          if (bits.head==0) move(left,bits.tail,resultList)
-          else move(right,bits.tail,resultList)
+          if (bits.head==0) move(left,bits.tail,dropCnt+1)
+          else move(right,bits.tail,dropCnt+1)
         }
-        case Leaf(char, weight) => {
-          if(bits.isEmpty) char::Nil
-          else if (resultList.isEmpty) char::move(tree, bits, resultList)
-          else (resultList :+ char):::move(tree,bits,resultList)
-        }
+        case Leaf(char, weight) => (char,dropCnt)
       }
     }
 
-    if(bits.isEmpty) Nil else move(tree,bits,Nil)
+    if(bits.isEmpty) Nil
+    else {
+      val firstPair=move(tree,bits,0)
+      firstPair._1::decode(tree,bits.drop(firstPair._2))
+    }
   }
 
   /**
@@ -250,6 +250,7 @@ object Huffman {
         case Leaf(char, weight) => Nil
       }
     }
+
     if(text.isEmpty) Nil else move(tree,text.head):::encode(tree)(text.tail)
   }
 
