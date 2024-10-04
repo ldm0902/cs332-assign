@@ -241,19 +241,16 @@ object Huffman {
    * into a sequence of bits.
    */
   def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
-    def move(tree: CodeTree, text:List[Char], resultList: List[Bit]): List[Bit]={
+    def move(tree: CodeTree, char:Char): List[Bit]={
       tree match {
         case Fork(left, right, chars, weight) => {
-          if (Huffman.chars(left).contains(text.head)) 0::move(left,text,resultList)
-          else 1::move(right,text,resultList)
+          if (Huffman.chars(left).contains(char)) 0::move(left,char)
+          else 1::move(right,char)
         }
-        case Leaf(char, weight) => {
-          if(text.tail.isEmpty) Nil else move(tree,text.tail,resultList)
-        }
+        case Leaf(char, weight) => Nil
       }
     }
-
-    if(text.isEmpty) Nil else move(tree,text,Nil)
+    if(text.isEmpty) Nil else move(tree,text.head):::encode(tree)(text.tail)
   }
 
 
