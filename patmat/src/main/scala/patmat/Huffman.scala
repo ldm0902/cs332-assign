@@ -204,13 +204,14 @@ object Huffman {
           else move(right,bits.tail,resultList)
         }
         case Leaf(char, weight) => {
-          if (resultList.isEmpty) char::move(tree, bits, resultList)
+          if(bits.isEmpty) char::Nil
+          else if (resultList.isEmpty) char::move(tree, bits, resultList)
           else (resultList :+ char):::move(tree,bits,resultList)
         }
       }
     }
 
-    move(tree,bits,Nil)
+    if(bits.isEmpty) Nil else move(tree,bits,Nil)
   }
 
   /**
@@ -247,12 +248,12 @@ object Huffman {
           else 1::move(right,text,resultList)
         }
         case Leaf(char, weight) => {
-          move(tree,text.tail,resultList)
+          if(text.tail.isEmpty) Nil else move(tree,text.tail,resultList)
         }
       }
     }
 
-    move(tree,text,Nil)
+    if(text.isEmpty) Nil else move(tree,text,Nil)
   }
 
 
