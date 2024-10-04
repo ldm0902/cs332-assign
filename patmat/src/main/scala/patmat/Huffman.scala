@@ -194,7 +194,22 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = ???
+  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {   //return type changed
+    def move(tree: CodeTree, bits: List[Bit], resultList: List[Char]): List[Char]={
+      tree match {
+        case Fork(left, right, chars, weight) => {
+          if (bits.head==0) move(left,bits.tail,resultList)
+          else move(right,bits.tail,resultList)
+        }
+        case Leaf(char, weight) => {
+          if (resultList.isEmpty) char::move(tree, bits, resultList)
+          else (resultList :+ char)::move(tree,bits,resultList)
+        }
+      }
+    }
+
+    move(tree,bits,Nil)
+  }
 
   /**
    * A Huffman coding tree for the French language.
@@ -212,7 +227,7 @@ object Huffman {
   /**
    * Write a function that returns the decoded secret
    */
-  def decodedSecret: List[Char] = ???
+  def decodedSecret: List[Char] = decode(frenchCode,secret)
 
 
 
@@ -222,7 +237,21 @@ object Huffman {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
+    def move(tree: CodeTree, text:List[Char], resultList: List[Bit]): List[Bit]={
+      tree match {
+        case Fork(left, right, chars, weight) => {
+          if (Huffman.chars(left).contains(text.head)) 0::move(left,text,resultList)
+          else 1::move(right,text,resultList)
+        }
+        case Leaf(char, weight) => {
+          move(tree,text.tail,resultList)
+        }
+      }
+    }
+
+    move(tree,text,Nil)
+  }
 
 
   // Part 4b: Encoding using code table
