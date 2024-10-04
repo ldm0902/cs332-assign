@@ -159,7 +159,18 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-  def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+  def until(x: List[CodeTree]=>Boolean, y: List[CodeTree]=>List[CodeTree])(trees: List[CodeTree]): CodeTree = {
+    //Should I need import statement below?
+    import scala.annotation.tailrec
+    @tailrec
+    def repeatUntilOneTree(trees: List[CodeTree]): CodeTree = {
+      if(trees.length<=0) trees.head
+      else if(x(trees)) trees.head
+      else repeatUntilOneTree(y(trees))
+    }
+
+    repeatUntilOneTree(trees)
+  }
 
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
@@ -167,7 +178,11 @@ object Huffman {
    * The parameter `chars` is an arbitrary text. This function extracts the character
    * frequencies from that text and creates a code tree based on them.
    */
-  def createCodeTree(chars: List[Char]): CodeTree = ???
+  def createCodeTree(chars: List[Char]): CodeTree = {
+    val timesList = times(chars)
+    val leafList = makeOrderedLeafList(timesList)
+    until(singleton,combine)(leafList)
+  }
 
 
 
