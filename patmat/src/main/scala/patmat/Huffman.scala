@@ -31,7 +31,7 @@ object Huffman {
   def weight(tree: CodeTree): Int = tree match {
     case Fork(left,right,chars,weight) => weight
     case Leaf(char,weight) => weight
-  }// tree match ...
+  }
 
   def chars(tree: CodeTree): List[Char] = tree match {
     case Fork(left,right,chars,weight) => chars
@@ -98,8 +98,8 @@ object Huffman {
    */
   def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
     def insert(pair: (Char,Int), previousList: List[Leaf]): List[Leaf] = {
-      if (previousList.isEmpty) List(new Leaf(pair._1,pair._2))
-      else if (previousList.head.weight > pair._2) new Leaf(pair._1,pair._2) :: previousList
+      if (previousList.isEmpty) List(Leaf(pair._1,pair._2))
+      else if (previousList.head.weight > pair._2) Leaf(pair._1,pair._2) :: previousList
       else previousList.head :: insert(pair,previousList.tail)
     }
 
@@ -133,7 +133,7 @@ object Huffman {
       val chars = Huffman.chars(codeTree1) ::: Huffman.chars(codeTree2)
       val weight =Huffman.weight(codeTree1)+Huffman.weight(codeTree2)
 
-      val newCodeTree = new Fork(codeTree1,codeTree2,chars,weight)
+      val newCodeTree = Fork(codeTree1,codeTree2,chars,weight)
 
       def insert(codetree: CodeTree, previousList: List[CodeTree]): List[CodeTree] = {
         if (previousList.isEmpty) List(codetree)
@@ -162,7 +162,7 @@ object Huffman {
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
   def until(x: List[CodeTree]=>Boolean, y: List[CodeTree]=>List[CodeTree])(trees: List[CodeTree]): CodeTree = {
-    //Should I need import statement below?
+
     import scala.annotation.tailrec
     @tailrec
     def repeatUntilOneTree(trees: List[CodeTree]): CodeTree = {
