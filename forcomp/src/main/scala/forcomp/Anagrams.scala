@@ -84,9 +84,9 @@ object Anagrams {
   def combinations(occurrences: Occurrences): List[Occurrences] = {
     if (occurrences.isEmpty) List()
     else {
-      val outerSubCombinations=combinations(occurrences.tail)
-      val innerSubCombinations=(for(i <- 1 to occurrences.head._2) yield outerSubCombinations.map(t=>(occurrences.head._1,i)::t)).toList.flatten
-      outerSubCombinations:::innerSubCombinations
+      val innerSubCombinations=combinations(occurrences.tail)
+      val outerSubCombinations=(for(i <- 1 to occurrences.head._2; tail <- innerSubCombinations) yield (occurrences.head._1,i)::tail).toList
+      innerSubCombinations:::outerSubCombinations
     }
   }
 
