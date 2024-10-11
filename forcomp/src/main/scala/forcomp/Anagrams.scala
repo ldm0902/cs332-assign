@@ -82,12 +82,8 @@ object Anagrams {
    *  in the example above could have been displayed in some other order.
    */
   def combinations(occurrences: Occurrences): List[Occurrences] = {
-    if (occurrences.isEmpty) List()
-    else {
-      val innerSubCombinations=combinations(occurrences.tail)
-      val outerSubCombinations=(for(i <- 1 to occurrences.head._2; tail <- innerSubCombinations) yield (occurrences.head._1,i)::tail).toList
-      innerSubCombinations:::outerSubCombinations
-    }
+    val singleSubsetOccurrences : List[Occurrences] = occurrences.map(x => (for(i <- 1 to x._2) yield (x._1,i)).toList)
+    singleSubsetOccurrences.foldRight(List[Occurrences](Nil))((x,y)=>y:::(for(i<-x; j<-y) yield (i::j)))
   }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
@@ -100,7 +96,16 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+//    val mapX = x.toMap
+//    (y.foldLeft(mapX)((a, b) => {
+//      val timeOfDeletedX = a.apply(b._1)
+//      if (timeOfDeletedX == b._2) a - b._1 else a.updated(b._1, a.apply(b._1) - b._2)
+//    })).toList
+
+    val mapY=y.toMap
+    x.map(a=>(a._1,a._2-mapY.getOrElse(a._1,0))).filter(a=>a._2>0)
+  }
 
   /** Returns a list of all anagram sentences of the given sentence.
    *  
@@ -142,6 +147,16 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
-
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    def sentenceAnagramsHelper(occurrences: Occurrences): List[Sentence] = {
+      if (occurrences.isEmpty) List(Nil)
+      else for {
+        combination <- combinations(occurrences)
+        word <- dictionaryByOccurrences.getOrElse(combination, Nil)
+        remainChars <- sentenceAnagramsHelper(subtract(occurrences,wordOccurrences(word)))
+        //if combination.nonEmpty
+      } yield word :: remainChars
+    }
+    sentenceAnagramsHelper(sentenceOccurrences(sentence))
+  }
 }
