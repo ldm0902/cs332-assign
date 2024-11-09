@@ -49,7 +49,7 @@ trait NodeScala {
     val listenerSubscription = listener.start()
 
     val asynchronousComputation = Future.run() { cnclTkn =>
-      Future{
+      async {
         while(cnclTkn.nonCancelled){
           val (request, exchange) = await(listener.nextRequest())
           respond(exchange,cnclTkn,handler(request))
